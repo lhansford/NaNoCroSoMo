@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NaNoCroSoMo</title>
+    <link rel="stylesheet" href= "{{ url_for('static', filename='style.css') }}" charset="utf-8">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+
+    <script charset="utf-8">
+      var storyId = {{ story.id }};
+      var loadTimestamp = "{{ load_timestamp }}";
+    </script>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="page-header">
+            <h1>NaNoCroSoMo</h1>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-8">
+          <section class="story">
+            {% for paragraph in paragraphs %}
+            <p>{{ paragraph }}</p>
+            {% endfor %}
+          </section>
+        </div>
+        <div class="col-lg-4">
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <p>
+                NaNoCroSoMo (National Novel Crowd Sourcing Month) is a take on
+                <a href="http://nanowrimo.org/">NaNoWriMo</a> inspired by the work
+                of those mentioned in <a href="http://www.theverge.com/2014/11/25/7276157/nanogenmo-robot-author-novel">the recent Verge article</a>
+                covering the work of a number of programmers trying to use
+                algorithms to generate novels. My implementation meets somewhere in
+                the middle of these two. Every thirty seconds a computer generated
+                word is added to the story. This word is selected using n-grams taken
+                from the Google Books corpus.
+              </p>
+              <p>
+                To add a human element, however, anyone
+                can add their own word. Simply type a word and hit enter to add it to
+                the story.
+              </p>
+              <p>
+                Created by <a href="http://lukehansford.me/">Luke Hansford</a>.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" id="last-row">
+        <div class="col-lg-12">
+          <div class="alert alert-danger" id="error" role="alert"></div>
+          <form class="form-inline" role="form" id='form'>
+            <div class="input-group">
+            <input class="form-control input" type="text" placeholder="Enter the next word" id="word-input" name="word-input" value="">
+            <span class="input-group-btn">
+              <button type="button" class="btn btn-default" id="add-word" name="add-word">Add</button>
+            </span>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
