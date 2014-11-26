@@ -123,14 +123,14 @@ def get_next_word():
 def singleNgram(word):
 	query = "SELECT second, count(second) as second_count FROM publicdata:samples.trigrams WHERE first='%s' GROUP BY second ORDER BY second_count DESC;" % word
 	result = makeQuery(query)
-	if result['totalRows'] == '0':
+	if not result.get('totalRows', False):
 		return "."
 	return select_word_from_ngrams(result['rows'])
 
 def doubleNgram(word1, word2):
 	query = "SELECT third, count(third) as third_count FROM publicdata:samples.trigrams WHERE first='" + word1 + "'and second='" + word2 + "' GROUP BY third ORDER BY third_count DESC;"
 	result = makeQuery(query)
-	if result['totalRows'] == '0':
+	if not result.get('totalRows', False):
 		return singleNgram(word2)
 	else:
 		return select_word_from_ngrams(result['rows'])
