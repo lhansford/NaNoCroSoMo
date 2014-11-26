@@ -163,4 +163,4 @@ def select_word_from_ngrams(result):
 
 
 if __name__ == '__main__':
-	app.run(debug=True)
+	app.run()
