@@ -30,7 +30,6 @@ def initialize():
 def index():
 	story = models.Story.query.first()
 	paragraphs = story.get_paragraphs()
-	print(paragraphs)
 	timestamp = datetime.utcnow().strftime("%d-%m-%y-%H-%M-%S-%f")
 	return render_template("index.html",
 		story=story,
@@ -41,7 +40,6 @@ def index():
 @app.route('/_add', methods=['POST'])
 def add_word():
 	post_json = request.get_json(force=True)
-	print(post_json)
 	if not post_json or not 'word' in post_json or not 'paragraph' in post_json or not 'story_id' in post_json:
 		abort(400)
 	word = post_json['word']
@@ -71,7 +69,6 @@ def add_word():
 def get_updated_words(timestamp, story_id):
 	timestamp = datetime.strptime(timestamp, "%d-%m-%y-%H-%M-%S-%f")
 	new_words = models.Word.query.filter_by(story_id=story_id).filter(timestamp < models.Word.created_at).all()
-	print(new_words)
 
 	return {
 		'paragraphs':get_paragraphs(new_words),
@@ -91,7 +88,6 @@ def get_paragraphs(words):
 	return [ ''.join(p) for p in paragraphs ]
 
 def get_next_word():
-	print("Thread run")
 	story_id = 1
 	words = models.Word.query.filter_by(story_id=story_id).order_by('created_at').all()
 	if len(words) == 0:
@@ -107,7 +103,6 @@ def get_next_word():
 		else:
 			new_word = doubleNgram(words[-2].word, words[-1].word)
 
-		print(new_word)
 		word = models.Word(
 			created_at = datetime.utcnow(),
 			word = new_word,
@@ -123,14 +118,14 @@ def get_next_word():
 def singleNgram(word):
 	query = "SELECT second, count(second) as second_count FROM publicdata:samples.trigrams WHERE first='%s' GROUP BY second ORDER BY second_count DESC;" % word
 	result = makeQuery(query)
-	if not result.get('totalRows', False):
+	if 'rows' not in result.keys():
 		return "."
 	return select_word_from_ngrams(result['rows'])
 
 def doubleNgram(word1, word2):
 	query = "SELECT third, count(third) as third_count FROM publicdata:samples.trigrams WHERE first='" + word1 + "'and second='" + word2 + "' GROUP BY third ORDER BY third_count DESC;"
 	result = makeQuery(query)
-	if not result.get('totalRows', False):
+	if 'rows' not in result.keys():
 		return singleNgram(word2)
 	else:
 		return select_word_from_ngrams(result['rows'])
@@ -150,7 +145,6 @@ def makeQuery(query):
 
 def select_word_from_ngrams(result):
 	sum_results = sum([int(r['f'][1]['v']) for r in result])
-	print(sum_results)
 	i = random.randint(0, sum_results)
 	count = 0
 	for r in result:
